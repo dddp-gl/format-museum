@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!--開発用-->
+        <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/6.22.1/react-router-dom.development.js" crossorigin></script>
+
+
+<!--実行-->
+        <!--
+        <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/6.22.1/react-router-dom.production.min.js" crossorigin></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/6.22.1/react-router-dom.development.js" crossorigin></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.1/redux.legacy-esm.js"></script>
+
+        -->
+<!--    -->
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>  
+        <script src="https://unpkg.com/web-vitals"></script>
+        <script src="https://cdn.jsdelivr.net/npm/recoil@0.7.7/umd/index.min.js" crossorigin="anonymous"></script>      
+    <style>
+        body {max-width: 900px;}
+        div { margin:1px;padding:1px;border:none}
+        .title { background-color: pink}
+        .menue { background-color: rgba(0, 0, 255, 0.288);}
+        .submenue { background-color: rgba(0, 0, 255, 0.103);}
+        .header { background-color: skyblue;}
+        .content { margin:1px;padding:1px;border:solid 1px;background-color: rgba(190, 216, 119, 0.445);}
+        .footer { background-color: gray;}
+
+    </style>
+
+        <title>Global Museum</title>
+    </head>
+    <body>
+        <div id="root" ></div>
+    
+        <script type="text/babel">
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            const useState = React.useState;
+            let main=1;
+            let sub=1;
+            let data =[];
+            let menue =[
+                ['1','menue2',[
+                        ['1','submenue2',['test-collumn11a','test-collumn11b']],
+                        ['2','submenue3',['test-collumn12a','test-collumn12b']],
+                        ['3','submenue3',['test-collumn13a','test-collumn13b']]
+                ]],
+                ['2','menue3',[
+                    ['1','submenue2',['test-collumn21a','test-collumn21b']],
+                    ['2','submenue3',['test-collumn22a','test-collumn22b']],
+                    ['3','submenue3',['test-collumn23a','test-collumn23b']]
+                ]],
+                ['3','menue4',[
+                    ['1','submenue2',['test-collumn31a','test-collumn31b']],
+                    ['2','submenue3',['test-collumn32a','test-collumn32b']],
+                    ['3','submenue3',['test-collumn33a','test-collumn33b']]
+                ]]
+            ];      
+//            console.log(menue);
+            let data_title_e = 'title_e';
+            let data_header_e = 'header';
+            let data_title = 'title';
+            let data_header = 'header';
+            let data_footer = 'footer';
+            
+            const make_data=()=>{
+                //固定データの処理
+                console.log('data csv 1');
+                console.log(data);
+                data_title_e = data[1][4];
+                data_header_e = data[2][4];                
+                data_title = data[3][4];
+                data_header = data[4][4];
+                data_footer = data[5][4];
+                console.log(data_title_e);
+                console.log(data_header_e);              
+                console.log(data_title);               
+                console.log(data_header); 
+                console.log(data_footer);
+
+
+                //メニューデータの処理
+                let menue0 =[];
+                let menue1 =[];
+                let menue2 =[];
+                let menue3 =[];
+                let menue4 =[];
+
+                data.forEach((row,index)=>{
+                    if(index >= 7){
+                        if(row[0]=='' && row[2]=='' && row[4]!=''){
+                                menue4.push(row[4]);
+                            }
+                        if(row[0]=='' && row[2]!=''){
+                            menue3.push(menue4);
+                            menue4 =[];    
+                            menue4.push(row[4]);
+                            menue2.push(menue3);
+                            menue3=[];
+                            menue3.push(row[2],row[3]);
+                        }
+                        if(row[0]!=''){
+                            menue3.push(menue4);
+                            menue4 =[];    
+                            menue4.push(row[4]);
+                            menue2.push(menue3);
+                            menue3 =[];    
+                            menue3.push(row[2],row[3]); 
+                            menue1.push(menue2);
+                            menue2 =[];
+                            menue0.push(menue1);
+                            menue1 =[];                       
+                            menue1.push(row[0],row[1]);
+                        }
+                    }
+                });
+                menue3.push(menue4);
+                menue2.push(menue3);
+                menue1.push(menue2);
+                menue0.push(menue1);
+                menue0.shift();
+                menue = menue0;
+                console.log('menue shift');                    
+                console.log(menue0);
+                disp();
+            };
+
+            data = [];
+            fpapa('./data.csv').
+            then((value)=>{make_data();console.log(value)
+            });
+
+            const Layout=()=>{
+                return(
+                    <div>
+                        <h5 className="title">[Name]{data_title_e}<br/>[Concept]{data_header_e}</h5>                        
+                        <h2 className="title">[Name]{data_title}</h2>
+                        <h6 className="header">[Concept]{data_header}</h6>
+                        <p>[Main Menue]</p>
+                        <Menue />
+                        <p>[Sub Menue]</p>
+                        <SubMenue />
+                        <p>[Contents]</p>
+                        <div id="content" ><Item/></div>
+                        <p id='footer' className="footer">[Site Manager Mail Address]{data_footer}</p>
+                    </div>
+                );
+            };
+
+            const Menue = ()=>{
+                return(
+                    <div>
+                        {menue.map((item,index)=>{
+                            return(
+                                <button key={index+1}  className="menue" onClick={()=>{main=index+1;sub=1;disp();}}    >
+                                    <p>{index+1}:{item[1]}</p>
+                                </button>
+                            );
+                        })}
+                    </div>
+                );
+            };
+
+            const SubMenue =()=>{
+                console.log('submenue');
+                console.log(menue[main-1][2])
+
+                return(
+                    <div>
+                        {menue[main-1][2].map((item,index)=>{
+                            return(
+                                <button key={index+1} className="submenue" onClick={()=>{sub=index+1;disp()}}>
+                                    <p>{index+1}: {item[1]}</p>
+                                </button>
+                            );
+                        })}
+                    </div>
+                );
+            };
+
+            const make_item=(x)=>{
+                console.log('item :'+x);
+                let pic=/.jpg$/
+                let mp3=/.mp3$/
+                let mp4=/.mp4$/
+                if(pic.test(x)){
+                    x = <a href={`./img/${x}`} target="_blank"> <img src={`./img/${x}`} alt="pictue" width="100" height="100" /></a>;
+                    return x;
+                }
+                if(mp3.test(x)){
+                    x = <audio controls width="100" height="300" ><source src={`./sound/${x}`} type="audio/mp3" alt="sound" /></audio>;
+                    return x;
+                }
+                if(mp4.test(x)){
+                    x = <video controls width="300" height="300"><source src={`./movie/${x}`} type="video/mp4" alt="movie" /></video>;
+                    return x;
+                }
+                return (<div dangerouslySetInnerHTML={{ __html:x}} />);
+            };
+
+            const Item =()=>{
+                return(
+                    <div>
+                        {menue[main-1][2][sub-1][2].map((item,index)=>{
+                            return(
+                                <div key={index+1} className="content">{make_item(item)}</div>
+                            );
+                        })}
+                    </div>
+                );
+            };
+
+            const disp=()=>{
+                const el =()=><Layout/>;
+                root.render(el());
+            };
+            disp();
+
+            
+        ////CSVデータ読み込み関数
+            function fpapa(file_name){
+                    return new Promise((resolve,reject)=>{
+                    Papa.parse(file_name, {
+                        download: true,
+                        delimiter: ",",
+                        header: false,
+                        complete: function(results) {
+                            data = results.data;
+                            console.log('papa');                           
+                            console.log(data);
+                            resolve("ok");
+                        }
+                    });
+                })
+            }
+        </script>
+    </body>
+</html>
