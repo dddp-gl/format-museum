@@ -29,8 +29,12 @@
         body {max-width: 900px;}
         div { margin:1px;padding:1px;border:none}
         .title { background-color: pink}
-        .menue { background-color: rgba(0, 0, 255, 0.288);}
-        .submenue { background-color: rgba(0, 0, 255, 0.103);}
+        .menue { background-color: rgba(0, 0, 0, 0.0);}
+        .menue1 { background-color: rgba(0, 0,255, 0.3);}
+        .submenue { background-color: rgba(0, 0, 0, 0.0);}
+        .submenue1 { background-color: rgba(0, 0,255, 0.3);}
+
+
         .header { background-color: skyblue;}
         .content { margin:1px;padding:1px;border:solid 1px;background-color: rgba(190, 216, 119, 0.445);}
         .footer { background-color: gray;}
@@ -160,6 +164,13 @@
                 return(
                     <div>
                         {menue.map((item,index)=>{
+                            if(main==index+1){
+                                return(
+                                    <button key={index+1}  className="menue1" onClick={()=>{main=index+1;sub=1;disp();}}    >
+                                        <p>{index+1}:{item[1]}</p>
+                                    </button>
+                                );
+                            }
                             return(
                                 <button key={index+1}  className="menue" onClick={()=>{main=index+1;sub=1;disp();}}    >
                                     <p>{index+1}:{item[1]}</p>
@@ -177,6 +188,13 @@
                 return(
                     <div>
                         {menue[main-1][2].map((item,index)=>{
+                            if(sub==index+1){
+                                return(
+                                    <button key={index+1} className="submenue1" onClick={()=>{sub=index+1;disp()}} >
+                                        <p>{index+1}: {item[1]}</p>
+                                    </button>
+                                );
+                            };
                             return(
                                 <button key={index+1} className="submenue" onClick={()=>{sub=index+1;disp()}}>
                                     <p>{index+1}: {item[1]}</p>
